@@ -1191,36 +1191,46 @@ Z12aSGrXHoYwXux247w3UelvBftWMZo0Wlbr3iVBUh8E3CfkL+41ZHFc3Qbaqn8YqSFHaWIH21A2KQEL
 		// large-file origin. An empty value keeps the preview download disabled.
 		window.eaglercraftXIwaBundleURL = "";
 		window.eaglercraftXOpts = {
-			container: "game_frame",
-			assetsURI: [
-				{ url: "assets.epk?v=a965f5b6fae660d2", path: "" },
-				{ url: "sounds.epk?v=a965f5b6fae660d2", path: "" }
-			],
-			localesURI: "lang/",
-			worldsDB: "worlds",
-			servers: [
-				{ addr: "wss://mc.wolfboss-servers.dev", name: "Lyons Public Server" }
-			],
-			resourcePacksDB: "resourcePacks",
-			crashOnUncaughtExceptions: true,
-			enableEPKVersionCheck: false,
-			allowBootMenu: false,
-			inputSelfTest: false,
-			webgl2SelfTest: false,
-			// Use data URLs instead of the blob-origin probe.
-			disableBlobURLs: true,
-			// ?singlethread disables all workers; ?nomesh disables mesh workers, and so does a
-			// device profile that allows none.
-			singleThreadMode: true,
-				serverWorker: window.location.search.indexOf("singlethread") < 0,
-				meshWorkers: window.location.search.indexOf("singlethread") < 0
-					&& window.location.search.indexOf("nomesh") < 0
-					&& !(window.__eaglerDeviceProfile && window.__eaglerDeviceProfile.meshWorkers === 0),
-				meshWorkerVerify: false,
-				perfDebug: window.__eaglerPerfEnabled,
-				chunkUnloadHardCap: window.__eaglerChunkUnloadHardCap,
-			// -1 means adaptive. Java also honors an embedder-supplied positive override.
-			meshWorkerCount: chooseMeshWorkerCount()
+    		container: "game_frame",
+    		assetsURI: [
+        		{ url: "assets.epk?v=a965f5b6fae660d2", path: "" },
+        		{ url: "sounds.epk?v=a965f5b6fae660d2", path: "" }
+    		],
+    		localesURI: "lang/",
+    		worldsDB: "worlds",
+
+    		// 1. Dual-compatible server configuration:
+    		servers: [
+        		{ 
+            		name: "Lyons Public Server", 
+            		addr: "wss://mc.wolfboss-servers.dev",
+            		serverName: "Lyons Public Server",
+            		serverAddress: "wss://mc.wolfboss-servers.dev",
+            		hideAddr: false
+        		}
+    		],
+
+    		// 2. The Auto-Connect Feature:
+    		// If set, the client skips the multiplayer menu entirely on boot
+    		// and automatically joins your server!
+    		joinServer: "wss://mc.wolfboss-servers.dev",
+
+    		resourcePacksDB: "resourcePacks",
+    		crashOnUncaughtExceptions: true,
+    		enableEPKVersionCheck: false,
+    		allowBootMenu: false,
+    		inputSelfTest: false,
+    		webgl2SelfTest: false,
+    		disableBlobURLs: true,
+    		singleThreadMode: true,
+    		serverWorker: window.location.search.indexOf("singlethread") < 0,
+    		meshWorkers: window.location.search.indexOf("singlethread") < 0
+        		&& window.location.search.indexOf("nomesh") < 0
+        		&& !(window.__eaglerDeviceProfile && window.__eaglerDeviceProfile.meshWorkers === 0),
+    		meshWorkerVerify: false,
+    		perfDebug: window.__eaglerPerfEnabled,
+    		chunkUnloadHardCap: window.__eaglerChunkUnloadHardCap,
+    		meshWorkerCount: chooseMeshWorkerCount()
 		};
 
 		// Java updates the early boot UI and harness log.
