@@ -1190,79 +1190,82 @@ Z12aSGrXHoYwXux247w3UelvBftWMZo0Wlbr3iVBUh8E3CfkL+41ZHFc3Qbaqn8YqSFHaWIH21A2KQEL
 		// The hosted release may point this at a signed bundle on a separate
 		// large-file origin. An empty value keeps the preview download disabled.
 		window.eaglercraftXIwaBundleURL = "";
+
 		// --- DYNAMIC SERVER SELECTION ---
 		const urlParams = new URLSearchParams(window.location.search);
 		const selectedMode = urlParams.get('mode');
 
 		// If a mode is already picked, hide the selection modal
 		if (selectedMode) {
-    		document.addEventListener("DOMContentLoaded", () => {
-        		const modal = document.getElementById("modeSelector");
-        		if (modal) modal.style.display = "none";
-    		});
+			document.addEventListener("DOMContentLoaded", () => {
+				const modal = document.getElementById("modeSelector");
+				if (modal) modal.style.display = "none";
+			});
 		}
 
-		// Select the corresponding tunnel address
-		let activeServer = "wss://mc.wolfboss-servers.dev"; // fallback
+		// Only select a server if the user actually clicked one of the buttons
+		let activeServer = null;
 		if (selectedMode === "survival") {
-    		activeServer = "wss://survival.wolfboss-servers.dev";
+			activeServer = "wss://survival.wolfboss-servers.dev";
 		} else if (selectedMode === "creative") {
-    		activeServer = "wss://mc.wolfboss-servers.dev";
+			activeServer = "wss://mc.wolfboss-servers.dev";
 		}		
 		// ---------------------------------
 
 		window.eaglercraftXOpts = {
-    		container: "game_frame",
-    		assetsURI: [ ... ],
-    		localesURI: "lang/",
-    		worldsDB: "worlds",
+			container: "game_frame",
+			assetsURI: [
+				{ url: "assets.epk?v=a965f5b6fae660d2", path: "" },
+				{ url: "sounds.epk?v=a965f5b6fae660d2", path: "" }
+			],
+			localesURI: "lang/",
+			worldsDB: "worlds",
 
-    		servers: [
-        		{ 
-        			name: "Lyons Creative Server",
-        			// Provide address both with and without wss:// for compatibility
-        			addr: "mc.wolfboss-servers.dev",
-        			serverAddress: "wss://mc.wolfboss-servers.dev",
-        			// The protocol type from the button:
-        			type: "eaglerx",
-        			protocol: "eaglerx",
-        			// The resource pack button:
-        			resourcePack: "prompt",
-        			serverResourceMode: "prompt"
-        		},
-        		{ 
-        			name: "Lyons Survival Server",
-        			// Provide address both with and without wss:// for compatibility
-        			addr: "survival.wolfboss-servers.dev",
-        			serverAddress: "wss://survival.wolfboss-servers.dev",
-        			// The protocol type from the button:
-        			type: "eaglerx",
-        			protocol: "eaglerx",
-        			// The resource pack button:
-        			resourcePack: "prompt",
-        			serverResourceMode: "prompt"
-        		}
-    		],
+			// CRITICAL: relays must be defined so the client's internal relays.push() does not crash!
+			relays: [
+				{ addr: "wss://relay.eaglercraft.net/", comment: "Default Relay", primary: true }
+			],
 
-    		// Connects to whichever mode was selected!
-    		joinServer: activeServer,
+			servers: [
+				{ 
+					name: "Lyons Creative Server",
+					addr: "wss://mc.wolfboss-servers.dev",
+					serverAddress: "wss://mc.wolfboss-servers.dev",
+					type: "eaglerx",
+					protocol: "eaglerx",
+					resourcePack: "prompt",
+					serverResourceMode: "prompt"
+				},
+				{ 
+					name: "Lyons Survival Server",
+					addr: "wss://survival.wolfboss-servers.dev",
+					serverAddress: "wss://survival.wolfboss-servers.dev",
+					type: "eaglerx",
+					protocol: "eaglerx",
+					resourcePack: "prompt",
+					serverResourceMode: "prompt"
+				}
+			],
 
-    		resourcePacksDB: "resourcePacks",
-    		crashOnUncaughtExceptions: true,
-    		enableEPKVersionCheck: false,
-    		allowBootMenu: false,
-    		inputSelfTest: false,
-    		webgl2SelfTest: false,
-    		disableBlobURLs: true,
-    		singleThreadMode: true,
-    		serverWorker: window.location.search.indexOf("singlethread") < 0,
-    		meshWorkers: window.location.search.indexOf("singlethread") < 0
-        		&& window.location.search.indexOf("nomesh") < 0
-        		&& !(window.__eaglerDeviceProfile && window.__eaglerDeviceProfile.meshWorkers === 0),
-    		meshWorkerVerify: false,
-    		perfDebug: window.__eaglerPerfEnabled,
-    		chunkUnloadHardCap: window.__eaglerChunkUnloadHardCap,
-    		meshWorkerCount: chooseMeshWorkerCount()
+			// Auto-connects ONLY if the player selected a button
+			...(activeServer ? { joinServer: activeServer } : {}),
+
+			resourcePacksDB: "resourcePacks",
+			crashOnUncaughtExceptions: true,
+			enableEPKVersionCheck: false,
+			allowBootMenu: false,
+			inputSelfTest: false,
+			webgl2SelfTest: false,
+			disableBlobURLs: true,
+			singleThreadMode: true,
+			serverWorker: window.location.search.indexOf("singlethread") < 0,
+			meshWorkers: window.location.search.indexOf("singlethread") < 0
+				&& window.location.search.indexOf("nomesh") < 0
+				&& !(window.__eaglerDeviceProfile && window.__eaglerDeviceProfile.meshWorkers === 0),
+			meshWorkerVerify: false,
+			perfDebug: window.__eaglerPerfEnabled,
+			chunkUnloadHardCap: window.__eaglerChunkUnloadHardCap,
+			meshWorkerCount: chooseMeshWorkerCount()
 		};
 
 		// Java updates the early boot UI and harness log.
