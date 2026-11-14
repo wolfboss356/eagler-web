@@ -60,14 +60,17 @@
 
     <script>
         function launch(mode) {
-            // Immediate feedback: hide buttons, show loading text
+            // 1. Give the browser a single-use launch token
+            sessionStorage.setItem('launchMode', mode);
+
+            // 2. Visual feedback
             document.getElementById("buttons").style.display = "none";
             const status = document.getElementById("status");
             status.style.display = "block";
             status.innerText = "Please wait... Starting " + mode.toUpperCase() + " server...";
 
-            // Direct transfer to the game (loads only once!)
-            window.location.href = 'game.html?mode=' + mode;
+            // 3. Navigate cleanly to the game (no ?mode= in the URL!)
+            window.location.href = 'game.html';
         }
     </script>
 </body>

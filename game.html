@@ -1191,26 +1191,26 @@ Z12aSGrXHoYwXux247w3UelvBftWMZo0Wlbr3iVBUh8E3CfkL+41ZHFc3Qbaqn8YqSFHaWIH21A2KQEL
 		// large-file origin. An empty value keeps the preview download disabled.
 		window.eaglercraftXIwaBundleURL = "";
 
-		// --- DYNAMIC SERVER SELECTION ---
-		const urlParams = new URLSearchParams(window.location.search);
-		const selectedMode = urlParams.get('mode');
+		// --- ONE-TIME LAUNCH TOKEN CHECK ---
+		// 1. Read the token passed from index.html:
+		const selectedMode = sessionStorage.getItem('launchMode');
 
-		// Hide modal if user already selected a mode
-		if (selectedMode) {
-			document.addEventListener("DOMContentLoaded", () => {
-				const modal = document.getElementById("modeSelector");
-				if (modal) modal.style.display = "none";
-			});
+		// 2. Burn the token immediately so it can NEVER be reused on a refresh/direct visit:
+		sessionStorage.removeItem('launchMode');
+
+		// 3. If someone tries to open game.html directly without using the launcher, kick them to the menu:
+		if (!selectedMode) {
+			window.location.replace('/');
 		}
 
-		// Pre-assign the chosen server BEFORE WebAssembly reads it
+		// 4. Assign the target server:
 		let activeServer = null;
 		if (selectedMode === "survival") {
 			activeServer = "wss://survival.wolfboss-servers.dev";
 		} else if (selectedMode === "creative") {
 			activeServer = "wss://mc.wolfboss-servers.dev";
 		}
-		// ---------------------------------
+		// ------------------------------------
 
 		window.eaglercraftXOpts = {
 			container: "game_frame",
